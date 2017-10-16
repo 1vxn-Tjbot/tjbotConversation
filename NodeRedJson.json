@@ -1,0 +1,326 @@
+[
+    {
+        "id": "5af62170.06c2c",
+        "type": "wiotp out",
+        "z": "6a124f96.9ee0b",
+        "authType": "g",
+        "qs": "false",
+        "qsDeviceId": "",
+        "deviceKey": "7a4cbdf.2422144",
+        "deviceType": "RaspberryPi",
+        "deviceId": "RaspTjbot1",
+        "event": "event",
+        "format": "json",
+        "qos": "",
+        "name": "",
+        "x": 830,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "878e087e.919e98",
+        "type": "watson-conversation-v1",
+        "z": "6a124f96.9ee0b",
+        "name": "Conversation-vs",
+        "workspaceid": "4d9f6f4f-a5d2-4263-862d-40cf367faa3f",
+        "multiuser": false,
+        "context": false,
+        "default-endpoint": true,
+        "service-endpoint": "https://gateway.watsonplatform.net/conversation/api",
+        "x": 530,
+        "y": 60,
+        "wires": [
+            [
+                "446a5238.cc22ac",
+                "b1bbbd8b.be14d"
+            ]
+        ]
+    },
+    {
+        "id": "fcde3082.1294b",
+        "type": "wiotp in",
+        "z": "6a124f96.9ee0b",
+        "authType": "g",
+        "deviceKey": "7a4cbdf.2422144",
+        "deviceType": "",
+        "deviceId": "",
+        "command": "+",
+        "commandType": "g",
+        "qos": 0,
+        "name": "",
+        "x": 100,
+        "y": 60,
+        "wires": [
+            [
+                "ad4002f8.121e1"
+            ]
+        ]
+    },
+    {
+        "id": "446a5238.cc22ac",
+        "type": "function",
+        "z": "6a124f96.9ee0b",
+        "name": "getOutputConv",
+        "func": "var aux = msg.payload.output.text[0];\nmsg.payload = aux;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 810,
+        "y": 40,
+        "wires": [
+            [
+                "ecd9e951.4edbc8"
+            ]
+        ]
+    },
+    {
+        "id": "ecd9e951.4edbc8",
+        "type": "function",
+        "z": "6a124f96.9ee0b",
+        "name": "defineJsontoWatsonIoT",
+        "func": "msg.payload={d:{'text':msg.payload}};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 490,
+        "y": 220,
+        "wires": [
+            [
+                "be1b69b7.cd5828"
+            ]
+        ]
+    },
+    {
+        "id": "ad4002f8.121e1",
+        "type": "function",
+        "z": "6a124f96.9ee0b",
+        "name": "getTexttoConversation",
+        "func": "var text = msg.payload.d.text;\nmsg.payload = text;\n\nif(text!==undefined)\n    return msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 310,
+        "y": 60,
+        "wires": [
+            [
+                "878e087e.919e98"
+            ]
+        ]
+    },
+    {
+        "id": "be1b69b7.cd5828",
+        "type": "delay",
+        "z": "6a124f96.9ee0b",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "15",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 690,
+        "y": 220,
+        "wires": [
+            [
+                "5af62170.06c2c"
+            ]
+        ]
+    },
+    {
+        "id": "13457820.3d3268",
+        "type": "inject",
+        "z": "6a124f96.9ee0b",
+        "name": "",
+        "topic": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "x": 90,
+        "y": 520,
+        "wires": [
+            [
+                "87860010.cd096",
+                "e1221966.d018d8"
+            ]
+        ]
+    },
+    {
+        "id": "87860010.cd096",
+        "type": "rpi-gpio out",
+        "z": "6a124f96.9ee0b",
+        "name": "LED ON",
+        "pin": "7",
+        "set": true,
+        "level": "1",
+        "freq": "",
+        "out": "out",
+        "x": 258,
+        "y": 473,
+        "wires": []
+    },
+    {
+        "id": "b1bbbd8b.be14d",
+        "type": "function",
+        "z": "6a124f96.9ee0b",
+        "name": "get Text for service",
+        "func": "var aux = msg.payload.output.text[0];\nmsg.payload = aux;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 180,
+        "y": 320,
+        "wires": [
+            [
+                "b7879d73.1e9ee"
+            ]
+        ]
+    },
+    {
+        "id": "b7879d73.1e9ee",
+        "type": "watson-text-to-speech",
+        "z": "6a124f96.9ee0b",
+        "name": "Text to speech",
+        "lang": "en-US",
+        "langhidden": "en-US",
+        "langcustom": "NoCustomisationSetting",
+        "langcustomhidden": "",
+        "voice": "en-US_AllisonVoice",
+        "voicehidden": "en-US_AllisonVoice",
+        "format": "audio/wav",
+        "password": "TZpHypVeeGbb",
+        "payload-response": true,
+        "default-endpoint": true,
+        "service-endpoint": "https://stream.watsonplatform.net/text-to-speech/api",
+        "x": 380,
+        "y": 320,
+        "wires": [
+            [
+                "aae2375b.113218"
+            ]
+        ]
+    },
+    {
+        "id": "aae2375b.113218",
+        "type": "function",
+        "z": "6a124f96.9ee0b",
+        "name": "Format Speech",
+        "func": "msg.payload=msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 570,
+        "y": 320,
+        "wires": [
+            [
+                "596fa475.05352c",
+                "4a6ece3.09b493"
+            ]
+        ]
+    },
+    {
+        "id": "4a6ece3.09b493",
+        "type": "file",
+        "z": "6a124f96.9ee0b",
+        "name": "Create WAV",
+        "filename": "/home/pi/temp/speech.wav",
+        "appendNewline": false,
+        "createDir": true,
+        "overwriteFile": "true",
+        "x": 783,
+        "y": 325,
+        "wires": []
+    },
+    {
+        "id": "a4e27fff.60593",
+        "type": "file in",
+        "z": "6a124f96.9ee0b",
+        "name": "Read WAV",
+        "filename": "/home/pi/temp/speech.wav",
+        "format": "stream",
+        "chunk": false,
+        "sendError": false,
+        "x": 769,
+        "y": 431,
+        "wires": [
+            [
+                "138ade4c.991fb2"
+            ]
+        ]
+    },
+    {
+        "id": "596fa475.05352c",
+        "type": "delay",
+        "z": "6a124f96.9ee0b",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 600,
+        "y": 400,
+        "wires": [
+            [
+                "a4e27fff.60593"
+            ]
+        ]
+    },
+    {
+        "id": "138ade4c.991fb2",
+        "type": "exec",
+        "z": "6a124f96.9ee0b",
+        "command": "aplay /home/pi/temp/speech.wav",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "Play Audio",
+        "x": 941,
+        "y": 433.5,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "e1221966.d018d8",
+        "type": "exec",
+        "z": "6a124f96.9ee0b",
+        "command": "sudo amixer cset numid=3 1",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "Play Audio",
+        "x": 270,
+        "y": 540,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "7a4cbdf.2422144",
+        "type": "wiotp-credentials",
+        "z": "",
+        "name": "",
+        "org": "1b4p9m",
+        "serverName": "",
+        "devType": "RaspberryPi",
+        "devId": "RaspTjbot1",
+        "keepalive": "60",
+        "cleansession": true,
+        "tls": "",
+        "usetls": false
+    }
+]
